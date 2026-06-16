@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Register</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    margin:0;
+    font-family:Poppins;
+    background:#000;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+/* Cyber Frame */
+
+.frame{
+    width:520px;
+    padding:40px;
+    border:2px solid #00eaff;
+    box-shadow:0 0 40px #00eaff;
+    position:relative;
+}
+
+.frame:before{
+    content:"";
+    position:absolute;
+    top:-2px;
+    left:-2px;
+    width:70px;
+    height:70px;
+    border-top:2px solid #00eaff;
+    border-left:2px solid #00eaff;
+}
+
+.frame:after{
+    content:"";
+    position:absolute;
+    bottom:-2px;
+    right:-2px;
+    width:70px;
+    height:70px;
+    border-bottom:2px solid #00eaff;
+    border-right:2px solid #00eaff;
+}
+
+h2{
+    text-align:center;
+    color:#00eaff;
+}
+
+h3{
+    color:#00eaff;
+    text-align:center;
+    margin-top:30px;
+}
+
+/* Input fields */
+
+.input-box{
+    position:relative;
+    width:100%;
+    margin-bottom:15px;
+}
+
+.input-box input{
+    width:100%;
+    padding:12px;
+    padding-right:45px;
+    border:none;
+    outline:none;
+    background:#eee;
+    border-radius:4px;
+    box-sizing:border-box;
+}
+
+/* Eye icon */
+
+.toggle{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+    font-size:18px;
+    color:#00eaff;
+}
+
+/* Buttons */
+
+button{
+    padding:12px 25px;
+    border:1px solid #00eaff;
+    background:transparent;
+    color:#00eaff;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#00eaff;
+    color:black;
+}
+
+.register-btn{
+    width:100%;
+    margin-top:10px;
+}
+
+/* Video */
+
+video{
+    border:2px solid #00eaff;
+    border-radius:6px;
+    display:block;
+    margin:auto;
+}
+
+.capture-btn{
+    display:block;
+    margin:15px auto;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="frame">
+
+<h2>User Registration</h2>
+
+<form method="POST" id="registerForm">
+
+<div class="input-box">
+<input type="text" name="username" placeholder="Username" required>
+</div>
+
+<div class="input-box">
+<input type="email" name="email" placeholder="Email" required>
+</div>
+
+<div class="input-box">
+<input type="password" id="password1" name="password1" placeholder="Password" required>
+<span class="toggle" onclick="togglePassword('password1', this)">👁</span>
+</div>
+
+<div class="input-box">
+<input type="password" id="password2" name="password2" placeholder="Confirm Password" required>
+<span class="toggle" onclick="togglePassword('password2', this)">👁</span>
+</div>
+
+<div class="input-box">
+<input type="password" id="password3" name="password3" placeholder="Confirm Again" required>
+<span class="toggle" onclick="togglePassword('password3', this)">👁</span>
+</div>
+
+<!-- Hidden keystroke fields -->
+
+<input type="hidden" name="typing1" id="typing1">
+<input type="hidden" name="flight1" id="flight1">
+<input type="hidden" name="typing2" id="typing2">
+<input type="hidden" name="flight2" id="flight2">
+<input type="hidden" name="typing3" id="typing3">
+<input type="hidden" name="flight3" id="flight3">
+
+<!-- Face images -->
+
+<div id="faceInputsContainer"></div>
+
+<button class="register-btn" type="submit">Register</button>
+
+</form>
+
+<h3>Face Registration</h3>
+
+<video id="video" width="320" height="240" autoplay></video>
+
+<button class="capture-btn" type="button" onclick="capture()">Capture Face</button>
+
+<input type="hidden" name="face_images" id="face_images">
+
+<canvas id="canvas" width="224" height="224" style="display:none;"></canvas>
+
+</div>
+
+<script>
+
+/* Password visibility */
+
+function togglePassword(id, icon){
+
+    const field = document.getElementById(id);
+
+    if(field.type === "password"){
+        field.type = "text";
+        icon.textContent = "🙈";
+    }else{
+        field.type = "password";
+        icon.textContent = "👁";
+    }
+}
+
+/* Keystroke Capture */
+
+document.addEventListener("DOMContentLoaded", function() {
+
+function setupTypingCapture(passwordId, typingInputName, flightInputName) {
+
+    const field = document.getElementById(passwordId);
+
+    let startTime = 0;
+    let keyTimes = [];
+
+    field.addEventListener("focus", function() {
+        startTime = Date.now();
+        keyTimes = [];
+    });
+
+    field.addEventListener("keydown", function() {
+        keyTimes.push(Date.now());
+    });
+
+    field.addEventListener("blur", function() {
+
+        const typingTime = (Date.now() - startTime) / 1000;
+
+        document.querySelector(`input[name='${typingInputName}']`).value = typingTime;
+
+        let flightTimes = [];
+
+        for (let i = 1; i < keyTimes.length; i++) {
+            flightTimes.push((keyTimes[i] - keyTimes[i - 1]) / 1000);
+        }
+
+        let avgFlight = flightTimes.length
+            ? flightTimes.reduce((a,b)=>a+b,0)/flightTimes.length
+            : 0;
+
+        document.querySelector(`input[name='${flightInputName}']`).value = avgFlight;
+
+    });
+
+}
+
+setupTypingCapture("password1","typing1","flight1");
+setupTypingCapture("password2","typing2","flight2");
+setupTypingCapture("password3","typing3","flight3");
+
+});
+
+/* Face Capture */
+
+let faceImagesArray = [];
+
+const video = document.getElementById("video");
+
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(stream => video.srcObject = stream)
+.catch(err => alert("Camera access denied!"));
+
+function capture(){
+
+    if(faceImagesArray.length >= 3){
+        alert("You already captured 3 images.");
+        return;
+    }
+
+    const canvas = document.getElementById("canvas");
+    const context = canvas.getContext("2d");
+
+    context.drawImage(video,0,0,224,224);
+
+    const imageData = canvas.toDataURL("image/jpeg",0.6);
+
+    faceImagesArray.push(imageData);
+
+    const input = document.createElement("input");
+    input.type="hidden";
+    input.name="face_images";
+    input.value=imageData;
+
+    document.getElementById("faceInputsContainer").appendChild(input);
+
+    alert("Face capture "+faceImagesArray.length+"/3 completed");
+
+}
+
+document.getElementById("registerForm").addEventListener("submit",function(e){
+
+    if(faceImagesArray.length < 3){
+
+        e.preventDefault();
+        alert("Please capture 3 face samples before registering.");
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
