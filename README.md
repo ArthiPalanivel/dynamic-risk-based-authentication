@@ -42,35 +42,35 @@ A Flask-based intelligent authentication system that dynamically evaluates user 
 ```
 dynamic-risk-based-authentication/
 │
-├── app.py                        # App factory and entry point
-├── config.py                     # Configuration (DB, secret keys)
-├── extensions.py                 # Flask extensions
-├── requirements.txt              # Python dependencies
-├── .env.example                  # Environment variables template
+├── app.py                        
+├── config.py                     
+├── extensions.py                 
+├── requirements.txt            
+├── .env.example                  
 │
 ├── database/
-│   ├── db.py                     # MySQL connection setup
-│   └── schema.sql                # Database schema (users, login_history, otp)
+│   ├── db.py                     
+│   └── schema.sql                
 │
 ├── models/
-│   ├── baseline_model.py         # User behavioral baseline builder
-│   ├── face_auth.py              # Face verification using DeepFace
-│   ├── interaction_matrix.py     # Quantum interaction matrix for risk signals
-│   ├── keystrokes_model.py       # Keystroke dynamics analyzer
-│   ├── login_history_model.py    # Login record handler
-│   └── quantum_risk_engine.py    # Core risk scoring engine
+│   ├── baseline_model.py         
+│   ├── face_auth.py              
+│   ├── interaction_matrix.py     
+│   ├── keystrokes_model.py       
+│   ├── login_history_model.py    
+│   └── quantum_risk_engine.py    
 │
 ├── routes/
-│   ├── auth_routes.py            # Register, login, logout, risk evaluation
-│   ├── mfa_routes.py             # OTP and push notification MFA
-│   └── dashboard_routes.py       # User dashboard
+│   ├── auth_routes.py            
+│   ├── mfa_routes.py             
+│   └── dashboard_routes.py       
 │
 ├── static/
 │   └── js/
-│       ├── keystroke.js          # Captures keystroke timing in browser
-│       └── facelock.js           # Webcam capture for face verification
+│       ├── keystroke.js          
+│       └── facelock.js           
 │
-└── templates/                    # Jinja2 HTML templates
+└── templates/                    
     ├── login.html
     ├── register.html
     ├── dashboard.html
@@ -144,6 +144,34 @@ Visit `http://127.0.0.1:5000` in your browser.
 5. An **interaction matrix** applies cross-feature correlations
 6. The final **risk probability** (0–1) is computed using weighted measurement
 7. Based on the score (and a hard keystroke rule), the system routes the user to the appropriate MFA step
+
+---
+
+## 📸 Screenshots
+
+### 🏠 Home Page
+<img width="1918" height="970" alt="Home Page" src="https://github.com/user-attachments/assets/e6b647c1-16c1-48b3-aa50-5085731ecc5e" />
+
+### 📝 Register Page
+<img width="1901" height="971" alt="Register Page" src="https://github.com/user-attachments/assets/71049595-6595-44a2-9de0-5afd82a99e7e" />
+
+### 🔑 Login Page
+<img width="1918" height="972" alt="Login Page" src="https://github.com/user-attachments/assets/5f9ce770-846a-43ba-8603-bed32ebb0cdc" />
+
+### 📊 Dashboard
+<img width="1913" height="910" alt="Dashboard Page" src="https://github.com/user-attachments/assets/fc963944-a139-4c70-828a-c6d834798e94" />
+
+### 📧 OTP Verification
+<img width="1918" height="970" alt="OTP Page" src="https://github.com/user-attachments/assets/cfcc559e-d7e9-4e9a-9c2f-16c693298803" />
+
+### 🔒 Face Verification
+<img width="1917" height="900" alt="Face Verification Page" src="https://github.com/user-attachments/assets/b06af74e-99d8-4d2f-9512-561d9ab888e0" />
+
+### 📲 Push Notification Approval
+<img width="1912" height="914" alt="Push Notification Page" src="https://github.com/user-attachments/assets/e9afb4df-ae86-495d-9f2b-0ce7fbab1e3f" />
+
+
+> 💡 **Authentication Flow:** Home → Register → Login (keystroke capture) → Risk Evaluation → MFA (OTP / Push / Face Lock) → Dashboard
 
 ---
 
