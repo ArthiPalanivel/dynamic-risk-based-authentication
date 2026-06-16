@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Secure Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    margin:0;
+    font-family:Poppins;
+    background:#0f172a;
+    color:white;
+}
+
+/* NAVBAR */
+
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 40px;
+    background:#020617;
+    border-bottom:1px solid #1e293b;
+}
+
+.logo{
+    font-size:20px;
+    color:#38bdf8;
+    font-weight:600;
+}
+
+.logout{
+    background:#ef4444;
+    padding:8px 18px;
+    border:none;
+    border-radius:6px;
+    color:white;
+    cursor:pointer;
+}
+
+/* MAIN */
+
+.container{
+    padding:40px;
+}
+
+h2{
+    color:#38bdf8;
+}
+
+/* CARDS */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-top:30px;
+}
+
+.card{
+    background:#1e293b;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 0 15px rgba(56,189,248,0.2);
+}
+
+.card h3{
+    margin:0;
+    font-size:18px;
+}
+
+.card p{
+    margin-top:10px;
+    font-size:22px;
+    font-weight:600;
+}
+
+/* ACTIVITY TABLE */
+
+.activity{
+    margin-top:40px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #334155;
+}
+
+th{
+    text-align:left;
+    color:#38bdf8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<div class="logo">Quantum Secure System</div>
+
+<button class="logout" onclick="window.location='/logout'">Logout</button>
+
+</div>
+
+<div class="container">
+
+<h2>Welcome {{ username }} </h2>
+
+<p>Your session is actively monitored using behavioral biometrics.</p>
+
+<div class="cards">
+
+<div class="card">
+<h3>Security Status</h3>
+<p>Active</p>
+</div>
+
+<div class="card">
+<h3>Session Monitoring</h3>
+<p>Enabled</p>
+</div>
+
+<div class="card">
+<h3>Last Login</h3>
+<p>Today</p>
+</div>
+
+<div class="card">
+<h3>Risk Score</h3>
+<p>Low</p>
+</div>
+
+</div>
+
+<div class="activity">
+
+<h3>Recent Activity</h3>
+
+<table>
+
+<tr>
+<th>Date</th>
+<th>Device</th>
+<th>Location</th>
+<th>Status</th>
+</tr>
+
+<tr>
+<td>Today</td>
+<td>Chrome</td>
+<td>India</td>
+<td>Safe</td>
+</tr>
+
+<tr>
+<td>Yesterday</td>
+<td>Chrome</td>
+<td>India</td>
+<td>Safe</td>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+let keyDownTimes = {};
+let dwellTimes = [];
+let flightTimes = [];
+
+document.addEventListener("keydown", function(e){
+    keyDownTimes[e.key] = performance.now();
+});
+
+document.addEventListener("keyup", function(e){
+
+    let now = performance.now();
+
+    if(keyDownTimes[e.key]){
+        let dwell = now - keyDownTimes[e.key];
+        dwellTimes.push(dwell);
+    }
+
+    if(dwellTimes.length > 5){
+
+        let avgDwell = dwellTimes.reduce((a,b)=>a+b)/dwellTimes.length;
+        let avgFlight = 120;
+
+        fetch("/continuous-check",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                dwell_time:avgDwell,
+                flight_time:avgFlight
+            })
+        })
+        .then(res=>res.json())
+        .then(data=>{
+
+            if(data.status==="lock"){
+                alert("Suspicious typing detected. Session locked.");
+                window.location="/login";
+            }
+
+        });
+
+        dwellTimes=[];
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>
