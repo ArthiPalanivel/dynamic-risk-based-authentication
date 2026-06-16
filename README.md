@@ -155,6 +155,6 @@ This project was built as a portfolio project demonstrating adaptive authenticat
 
 ## 👩‍💻 Author
 
-Name: Arthi P  
-LinkedIn: https://www.linkedin.com/in/arthi-palanivel-0b7437264
-GitHub: https://github.com/ArthiPalanivel
+- **Name:** Arthi P
+- **LinkedIn:** https://www.linkedin.com/in/arthi-palanivel-0b7437264
+- **GitHub:** https://github.com/ArthiPalanivel
