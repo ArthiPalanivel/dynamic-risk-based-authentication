@@ -1,0 +1,8 @@
+Flask
+flask-mysqldb
+python-dotenv
+bcrypt
+deepface
+opencv-python
+numpy
+requests
