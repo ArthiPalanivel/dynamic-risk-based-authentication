@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    margin:0;
+    font-family:Poppins;
+    background:#000;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+}
+
+/* CYBER FRAME */
+
+.frame{
+    width:520px;
+    padding:50px;
+    border:2px solid #00eaff;
+    position:relative;
+    box-shadow:0 0 40px #00eaff;
+}
+
+.frame:before{
+    content:"";
+    position:absolute;
+    top:-2px;
+    left:-2px;
+    width:70px;
+    height:70px;
+    border-top:2px solid #00eaff;
+    border-left:2px solid #00eaff;
+}
+
+.frame:after{
+    content:"";
+    position:absolute;
+    bottom:-2px;
+    right:-2px;
+    width:70px;
+    height:70px;
+    border-bottom:2px solid #00eaff;
+    border-right:2px solid #00eaff;
+}
+
+h2{
+    text-align:center;
+    color:#00eaff;
+    margin-bottom:30px;
+}
+
+/* INPUT FIELD */
+
+.input-box{
+    position:relative;
+    display:flex;
+    align-items:center;
+    margin-bottom:18px;
+}
+
+.icon{
+    background:#00eaff;
+    padding:10px;
+    margin-right:10px;
+    border-radius:3px;
+}
+
+.input-box input{
+    width:100%;
+    padding:12px;
+    padding-right:45px;
+    border:none;
+    outline:none;
+    background:#eee;
+    border-radius:4px;
+    box-sizing:border-box;
+}
+
+/* PASSWORD BOX */
+
+.password-box{
+    position:relative;
+    width:100%;
+}
+
+/* Eye Icon */
+
+.toggle{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+    font-size:18px;
+    color:#00eaff;
+}
+
+/* REMEMBER */
+
+.remember{
+    font-size:13px;
+    margin-bottom:20px;
+}
+
+/* BUTTONS */
+
+.buttons{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+}
+
+button{
+    padding:10px 25px;
+    border:1px solid #00eaff;
+    background:transparent;
+    color:#00eaff;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#00eaff;
+    color:black;
+}
+
+.forgot{
+    text-align:center;
+    margin-top:15px;
+    font-size:13px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="frame">
+
+<h2>Login</h2>
+
+<form id="loginForm" method="POST" action="{{ url_for('auth.login') }}">
+
+<div class="input-box">
+<div class="icon">👤</div>
+<input type="text" name="username" placeholder="Username" required>
+</div>
+
+<div class="input-box">
+<div class="icon">🔒</div>
+
+<div class="password-box">
+<input type="password" name="password" id="password" placeholder="Password" required>
+<span class="toggle" onclick="togglePassword('password', this)">👁</span>
+</div>
+
+</div>
+
+<input type="hidden" name="keystroke_pattern" id="keystroke_pattern">
+
+<div class="remember">
+<input type="checkbox"> Remember me
+</div>
+
+<div class="buttons">
+<button type="submit">Log in</button>
+<button type="button" onclick="window.location='/register'">Sign up</button>
+</div>
+
+<div class="forgot">
+<a href="{{ url_for('auth.forgot_password') }}">Forgot password?</a>
+</div>
+
+</form>
+
+</div>
+
+<script>
+
+/* Password Toggle */
+
+function togglePassword(id, icon){
+
+const field = document.getElementById(id);
+
+if(field.type === "password"){
+field.type = "text";
+icon.textContent = "🙈";
+}else{
+field.type = "password";
+icon.textContent = "👁";
+}
+
+}
+
+/* Keystroke Dynamics */
+
+let startTime = 0;
+let keyDownTimes = [];
+let keyUpTimes = [];
+let dwellTimes = [];
+
+const passwordField = document.getElementById("password");
+const form = document.querySelector("form");
+
+passwordField.addEventListener("focus", function () {
+startTime = performance.now();
+keyDownTimes = [];
+keyUpTimes = [];
+});
+
+passwordField.addEventListener("keydown", function () {
+keyDownTimes.push(performance.now());
+});
+
+passwordField.addEventListener("keyup", function () {
+
+keyUpTimes.push(performance.now());
+
+let dwell =
+(keyUpTimes[keyUpTimes.length-1] -
+keyDownTimes[keyDownTimes.length-1]) / 1000;
+
+if (dwell > 0 && dwell < 5){
+dwellTimes.push(dwell);
+}
+
+});
+
+form.addEventListener("submit", function (e) {
+    e.preventDefault(); // STOP form temporarily
+
+let avgDwell = 0;
+
+if (dwellTimes.length > 0){
+avgDwell =
+dwellTimes.reduce((a,b)=>a+b,0) /
+dwellTimes.length;
+}
+
+if (avgDwell === 0) avgDwell = 0.15;
+
+const durationInput = document.createElement("input");
+durationInput.type = "hidden";
+durationInput.name = "dwell_time";
+durationInput.value = avgDwell;
+form.appendChild(durationInput);
+
+let flightTimes = [];
+
+for (let i = 1; i < keyDownTimes.length; i++){
+
+if(keyUpTimes[i-1] !== undefined){
+
+let flight =
+(keyDownTimes[i] - keyUpTimes[i-1]) / 1000;
+
+if(flight > 0 && flight < 5){
+flightTimes.push(flight);
+}
+
+}
+
+}
+
+let avgFlight = 0;
+
+if(flightTimes.length > 0){
+avgFlight =
+flightTimes.reduce((a,b)=>a+b,0) /
+flightTimes.length;
+}
+
+if (avgFlight === 0) avgFlight = 0.12;
+
+const flightInput = document.createElement("input");
+flightInput.type = "hidden";
+flightInput.name = "flight_time";
+flightInput.value = avgFlight;
+form.appendChild(flightInput);
+
+console.log("Dwell:", avgDwell);
+console.log("Flight:", avgFlight);
+
+function variance(arr){
+let mean = arr.reduce((a,b)=>a+b,0) / arr.length;
+return arr.reduce((a,b)=>a+(b-mean)*(b-mean),0)/arr.length;
+}
+
+let dwellVariance = dwellTimes.length>1 ? variance(dwellTimes) : 0;
+let flightVariance = flightTimes.length>1 ? variance(flightTimes) : 0;
+
+document.getElementById("keystroke_pattern").value =
+JSON.stringify({
+flight: flightTimes,
+dwell: dwellTimes,
+avg_dwell: avgDwell,
+avg_flight: avgFlight,
+dwell_var: dwellVariance,
+flight_var: flightVariance
+});
+
+    form.submit(); // manually submit AFTER adding values
+});
+
+</script>
+
+</body>
+</html>
