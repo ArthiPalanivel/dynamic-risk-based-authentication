@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Push Verification</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    margin:0;
+    font-family:Poppins;
+    background:#000;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+}
+
+/* Cyber Frame */
+
+.frame{
+    width:420px;
+    padding:50px;
+    border:2px solid #00eaff;
+    position:relative;
+    box-shadow:0 0 40px #00eaff;
+    text-align:center;
+}
+
+/* Futuristic corners */
+
+.frame:before{
+    content:"";
+    position:absolute;
+    top:-2px;
+    left:-2px;
+    width:60px;
+    height:60px;
+    border-top:2px solid #00eaff;
+    border-left:2px solid #00eaff;
+}
+
+.frame:after{
+    content:"";
+    position:absolute;
+    bottom:-2px;
+    right:-2px;
+    width:60px;
+    height:60px;
+    border-bottom:2px solid #00eaff;
+    border-right:2px solid #00eaff;
+}
+
+/* Title */
+
+h2{
+    color:#00eaff;
+    margin-bottom:25px;
+}
+
+/* Approve Button */
+
+.approve-btn{
+    display:inline-block;
+    padding:12px 30px;
+    border:1px solid #00eaff;
+    color:#00eaff;
+    text-decoration:none;
+    font-size:16px;
+    transition:0.3s;
+}
+
+.approve-btn:hover{
+    background:#00eaff;
+    color:black;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="frame">
+
+<h2>Push Notification Verification Page</h2>
+
+<a class="approve-btn" href="{{ url_for('auth.approve_push') }}">
+Approve Login
+</a>
+
+</div>
+
+</body>
+
+</html>
